@@ -4,6 +4,10 @@ Reference constants
 
 # Trisomy 21 constants
 TRISOMY_21 = "trisomy-21"
+TRISOMY_21_AAP = "trisomy-21-aap"
+TRISOMY_21_AAP_INFANT = "trisomy_21_aap_infant"
+TRISOMY_21_AAP_CHILD = "trisomy_21_aap_child"
+TRISOMY_21_AAP_REFERENCES = [TRISOMY_21_AAP_INFANT, TRISOMY_21_AAP_CHILD]
 
 # Turner constants
 TURNERS = "turners-syndrome"
