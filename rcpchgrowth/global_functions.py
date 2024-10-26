@@ -61,11 +61,11 @@ def measurement_from_sds(
             centile = stats.norm.cdf(requested_sds) * 100 # convert z-score to centile
             observation_value = stats.norm.ppf((centile - 90)/10) * sigma + p95
     else:
-        # all other references use the standard method    
+        # all other references use the standard method
         try:
             observation_value = measurement_for_z(z=requested_sds, l=l, m=m, s=s)
         except Exception as e:
-            print(e)
+            print(f"measurement_from_sds exception {e} - age: {age}, l: {l}, m: {m}, s: {s}, requested_sds: {requested_sds} lms: {lms}")
             return None
     
     return observation_value
@@ -141,7 +141,7 @@ def percentage_median_bmi(
             age=age, lms_value_array_for_measurement=lms_value_array_for_measurement
         )
     except LookupError as err:
-        print(err)
+        print(f"percentage median BMI lookup exception: {err}")
         return None
 
     m = lms["m"]  # this is the median BMI
@@ -182,6 +182,7 @@ def generate_centile(
 
     while age < max_age:
         # loop through the reference in steps of 0.1y
+
         try:
             measurement = measurement_from_sds(
                 reference=reference,
@@ -192,7 +193,8 @@ def generate_centile(
                 default_youngest_reference=False,
             )
         except Exception as err:
-            print(err)
+            # print(f"generate_centile exception: {err} for {age} y, {measurement}, Z: {z}")
+            pass
 
         value = create_data_point(
             age=age, measurement=measurement, label_value=label_value

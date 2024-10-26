@@ -72,6 +72,7 @@ def trisomy_21_aap_lms_array_for_measurement_and_sex(
     # returns the LMS array for a given measurement
     # raises a LookupError if the data is not available
     # No need for default_youngest_reference as all the data is from the same source
+    # Note there is an overlap in the age ranges of the two datasets, so the age parameter is used to select the correct dataset - below 36mths the data is more granular
 
     data_invalid, data_error = reference_data_absent(age=age, measurement_method=measurement_method, sex=sex)
 
@@ -83,16 +84,16 @@ def trisomy_21_aap_lms_array_for_measurement_and_sex(
         else:
             return TRISOMY_21_AAP_CHILD_DATA["measurement"][measurement_method][sex]
 
-def select_reference_data_for_trisomy_21_aap(trisomy_21_aap_reference_name, measurement_method:str, sex:str):
+def select_reference_data_for_trisomy_21_aap(trisomy_21_aap_reference_name, measurement_method:str, sex:str, default_youngest_reference: bool = False):
 
     if trisomy_21_aap_reference_name == TRISOMY_21_AAP_INFANT:
         try:
-            return_value = trisomy_21_aap_lms_array_for_measurement_and_sex(measurement_method=measurement_method, sex=sex, age=0.0)
+            return_value = trisomy_21_aap_lms_array_for_measurement_and_sex(measurement_method=measurement_method, sex=sex, age=1.0) # select arbitrary age of 1 y for infant data
         except:
             raise LookupError(f"No data for {measurement_method} in the {sex} Trisomy 21 (AAP) dataset (<36mths).")
     elif trisomy_21_aap_reference_name == TRISOMY_21_AAP_CHILD:
         try:
-            return_value = trisomy_21_aap_lms_array_for_measurement_and_sex(measurement_method=measurement_method, sex=sex, age=3.0)
+            return_value = trisomy_21_aap_lms_array_for_measurement_and_sex(measurement_method=measurement_method, sex=sex, age=4.0) # select arbitrary age of 4 y for child data
         except:
             raise LookupError(f"No data for {measurement_method} in the {sex} Trisomy 21 (US) dataset (>3y).")
     return return_value

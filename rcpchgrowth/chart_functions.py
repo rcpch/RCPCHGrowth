@@ -796,7 +796,8 @@ def create_trisomy_21_aap_chart(measurement_method: str, sex: str, centile_forma
             lms_array_for_measurement=select_reference_data_for_trisomy_21_aap(
                 trisomy_21_aap_reference_name=reference,
                 measurement_method=measurement_method, 
-                sex=sex)
+                sex=sex
+            )
         except:
             lms_array_for_measurement = []
 
