@@ -823,9 +823,9 @@ def create_trisomy_21_aap_chart(measurement_method: str, sex: str, centile_forma
             centile_data = []
 
             try:
-                # Generate a centile. there will be nine of these if Cole method selected.
-                # Some data does not exist at all ages, so any error reflects missing data.
-                # If this happens, an empty list is returned.
+            # Generate a centile. there will be nine of these if Cole method selected.
+            # Some data does not exist at all ages, so any error reflects missing data.
+            # If this happens, an empty list is returned.
                 centile_data = generate_centile(
                     z=z,
                     centile=centile_value,
@@ -835,8 +835,8 @@ def create_trisomy_21_aap_chart(measurement_method: str, sex: str, centile_forma
                     reference=TRISOMY_21_AAP,
                     is_sds=is_sds
                 )
-            except:
-                print(f"Not possible to generate centile data for Trisomy 21 (AAP) for {measurement_method} in {sex}s.")
+            except Exception as e:
+                print(f"Not possible to generate centile data for Trisomy 21 (AAP) for {measurement_method} in {sex}s. Array length: {len(lms_array_for_measurement)} due to {e}")
                 centile_data=None
             # Store this centile for a given measurement
             

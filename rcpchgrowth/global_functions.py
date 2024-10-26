@@ -63,7 +63,7 @@ def measurement_from_sds(
     else:
         # all other references use the standard method
         try:
-            observation_value = measurement_for_z(z=requested_sds, l=l, m=m, s=s)
+            observation_value = measurement_for_z(z=requested_sds, l=round(l, 3), m=round(m, 3), s=round(s, 3))
         except Exception as e:
             print(f"measurement_from_sds exception {e} - age: {age}, l: {l}, m: {m}, s: {s}, requested_sds: {requested_sds} lms: {lms}")
             return None
@@ -181,53 +181,54 @@ def generate_centile(
     age = min_age
 
     while age < max_age:
-        # loop through the reference in steps of 0.1y
+        # loop through the reference in steps of 1 week from preterm to 42 weeks, then monthly to 3y, then 6 monthly
 
         try:
             measurement = measurement_from_sds(
                 reference=reference,
                 measurement_method=measurement_method,
-                requested_sds=z,
+                requested_sds=round(z, 2),
                 sex=sex,
-                age=age,
+                age=round(age, 4),
                 default_youngest_reference=False,
             )
         except Exception as err:
-            # print(f"generate_centile exception: {err} for {age} y, {measurement}, Z: {z}")
+            print(err)
+            measurement = None  #
             pass
 
+        if measurement is not None:
+            measurement = round(measurement, 3)
+
         value = create_data_point(
-            age=age, measurement=measurement, label_value=label_value
+            age=round(age, 4), measurement=measurement, label_value=label_value
         )
 
         centile_measurements.append(value)
 
-        # weekly intervals until 4 y, then monthly
-        if age <= 2:
-            age += 7 / 365.25  # weekly intervals
+        # weekly intervals until 42 weeks, then monthly to 3 years, then six monthly
+        if age <= 0.3833:
+            age += 1/365.25 * 7  # weekly intervals
+        elif age <= 3:
+            age += 1 / 12 # monthly intervals
         else:
-            age += 1 / 12  # monthly intervals
-
-        # Although it is preferable to have weekly data points, it generates files of ~2.5 MB
-        # even after minifying, which are not practical. Weekly values makes plotting easier.
-        # Here we have used weekly points from preterm to 2 y, monthly values after.
-        # age += (7/365.25) # weekly intervals
+            age += 1 / 24  # six-monthly intervals
 
     # add the final value in the data set so the lines overlap cleanly
     try:
         measurement = measurement_from_sds(
             reference=reference,
             measurement_method=measurement_method,
-            requested_sds=z,
+            requested_sds=round(z, 2),
             sex=sex,
-            age=max_age,
+            age=round(max_age, 4),
             default_youngest_reference=True,
         )
     except Exception as err:
         print(err)
 
     value = create_data_point(
-        age=max_age, measurement=measurement, label_value=label_value
+        age=max_age, measurement=round(measurement, 3), label_value=label_value
     )
 
     centile_measurements.append(value)
@@ -472,8 +473,8 @@ def fetch_lms(age: float, lms_value_array_for_measurement: list):
         lms_value_array_for_measurement, age
     )  # returns nearest LMS for age
     if round(
-        lms_value_array_for_measurement[age_matched_index]["decimal_age"], 16
-    ) == round(age, 16):
+        lms_value_array_for_measurement[age_matched_index]["decimal_age"], 4
+    ) == round(age, 4):
         # there is an exact match in the data with the requested age
         l = lms_value_array_for_measurement[age_matched_index]["L"]
         m = lms_value_array_for_measurement[age_matched_index]["M"]
