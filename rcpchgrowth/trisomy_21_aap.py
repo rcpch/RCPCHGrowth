@@ -51,13 +51,13 @@ def reference_data_absent(
     """
 
     if age < 0: # lower threshold of trisomy_21 data
-        return True, "No reference data exists below 40 weeks gestation"
+        return True, "No Trisomy 21 (AAP) reference data exists below 40 weeks gestation"
     
     if age < 0.083 and measurement_method in ['height', 'ofc']: # lower threshold of trisomy_21 data
-        return True, "No reference data exists below 1 month of age for height or head circumference."
+        return True, "No Trisomy 21 (AAP) reference data exists below 1 month of age for height or head circumference."
     
-    if age < 2.0 and measurement_method in ['bmi']: # lower threshold of trisomy_21 data
-        return True, "No reference data exists below 2 years of age for BMI."
+    if age < 2 and measurement_method == 'bmi': # lower threshold of trisomy_21 data
+         return True, "No Trisomy 21 (AAP) reference data exists below 2 years of age for BMI."
     
     if age > TWENTY_YEARS: # upper threshold of trisomy_21 data
         return True, "Trisomy 21 reference data does not exist over the age of 20y."
@@ -68,6 +68,7 @@ def trisomy_21_aap_lms_array_for_measurement_and_sex(
         measurement_method: str,
         sex: str,
         age: float,
+        default_youngest_reference: bool = False
     ):
     # returns the LMS array for a given measurement
     # raises a LookupError if the data is not available
@@ -77,9 +78,14 @@ def trisomy_21_aap_lms_array_for_measurement_and_sex(
     data_invalid, data_error = reference_data_absent(age=age, measurement_method=measurement_method, sex=sex)
 
     if data_invalid:
-        raise LookupError(data_error)
+        raise LookupError(f"Reference data absent: {data_error}")
     else:
-        if age < 3.0:
+        if age <= 3.0 and measurement_method in ['height', 'weight', 'ofc']:
+            if measurement_method == 'ofc' and age==3 and default_youngest_reference:
+                return TRISOMY_21_AAP_INFANT_DATA["measurement"][measurement_method][sex]
+            elif measurement_method == 'ofc' and age==3 and not default_youngest_reference:
+                return TRISOMY_21_AAP_CHILD_DATA["measurement"][measurement_method][sex]
+            
             return TRISOMY_21_AAP_INFANT_DATA["measurement"][measurement_method][sex]
         else:
             return TRISOMY_21_AAP_CHILD_DATA["measurement"][measurement_method][sex]

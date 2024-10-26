@@ -468,7 +468,7 @@ def create_turner_chart(centile_format: Union[str, list], is_sds=False):
             centiles.append({"sds": round(z * 100) / 100,
                             "centile": centile_value, "data": centile_data})
         except Exception as e:
-            print(e)
+            print(f"create_turner chart generate centile error: {e}")
 
     # this is the end of the centile_collection for loop
     # All the centiles for this measurement, sex and reference are added to the measurements list
@@ -569,7 +569,7 @@ def create_trisomy_21_chart(measurement_method: str, sex: str, centile_format: U
             centiles.append({"sds": round(z, 2),
                             "centile": centile_value, "data": centile_data})
         except Exception as e:
-            print(f"{e}")
+            print(f"generate_centile error: {e}")
 
     # this is the end of the centile_collection for loop
     # All the centiles for this measurement, sex and reference are added to the measurements list
@@ -691,8 +691,8 @@ def create_cdc_chart(
                     reference=CDC,
                     is_sds=is_sds
                 )
-            except:
-                print(f"Not possible to generate centile data for CDC {measurement_method} in {sex}s.")
+            except LookupError as e:
+                print(f"Not possible to generate centile data for CDC {measurement_method} in {sex}s. {e}")
                 centile_data=None
             # Store this centile for a given measurement
             
@@ -836,7 +836,7 @@ def create_trisomy_21_aap_chart(measurement_method: str, sex: str, centile_forma
                     is_sds=is_sds
                 )
             except Exception as e:
-                print(f"Not possible to generate centile data for Trisomy 21 (AAP) for {measurement_method} in {sex}s. Array length: {len(lms_array_for_measurement)} due to {e}")
+                print(f"Not possible to generate centile data for Trisomy 21 (AAP) for {measurement_method} in {sex}s. {e}")
                 centile_data=None
             # Store this centile for a given measurement
             

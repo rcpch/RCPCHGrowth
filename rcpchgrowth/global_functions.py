@@ -33,7 +33,7 @@ def measurement_from_sds(
             default_youngest_reference=default_youngest_reference,
         )
     except LookupError as err:
-        raise LookupError(err)
+        raise LookupError(f"Look up error getting {reference} LMS array for {sex} {measurement_method}: {err}")
 
     # get LMS values from the reference: check for age match, interpolate if none
     lms = fetch_lms(
@@ -63,10 +63,13 @@ def measurement_from_sds(
     else:
         # all other references use the standard method
         try:
-            observation_value = measurement_for_z(z=requested_sds, l=round(l, 3), m=round(m, 3), s=round(s, 3))
+            observation_value = measurement_for_z(z=requested_sds, l=l, m=m, s=s)
         except Exception as e:
             print(f"measurement_from_sds exception {e} - age: {age}, l: {l}, m: {m}, s: {s}, requested_sds: {requested_sds} lms: {lms}")
             return None
+    
+    if observation_value is not None:
+        observation_value = round(observation_value, 3)
     
     return observation_value
 
@@ -184,6 +187,25 @@ def generate_centile(
         # loop through the reference in steps of 1 week from preterm to 42 weeks, then monthly to 3y, then 6 monthly
 
         try:
+            if reference == TRISOMY_21_AAP and age == 3.0:
+                # Trisomy 21 AAP data is split into infant and child data - keep both measurements
+                measurement = measurement_from_sds(
+                    reference=reference,
+                    measurement_method=measurement_method,
+                    requested_sds=round(z, 2),
+                    sex=sex,
+                    age=round(age, 4),
+                    default_youngest_reference=True
+                )
+                if measurement is not None:
+                    measurement = round(measurement, 3)
+
+                value = create_data_point(
+                    age=round(age, 4), measurement=measurement, label_value=label_value
+                )
+
+                centile_measurements.append(value)
+
             measurement = measurement_from_sds(
                 reference=reference,
                 measurement_method=measurement_method,
@@ -193,7 +215,7 @@ def generate_centile(
                 default_youngest_reference=False,
             )
         except Exception as err:
-            print(err)
+            print(f"Error getting measurement from SDS in generate_centile loop: {err}")
             measurement = None  #
             pass
 
@@ -212,7 +234,7 @@ def generate_centile(
         elif age <= 3:
             age += 1 / 12 # monthly intervals
         else:
-            age += 1 / 24  # six-monthly intervals
+            age += 1 / 6  # six-monthly intervals
 
     # add the final value in the data set so the lines overlap cleanly
     try:
@@ -225,7 +247,7 @@ def generate_centile(
             default_youngest_reference=True,
         )
     except Exception as err:
-        print(err)
+        print(f"Error getting measurement from SDS in generate centile end of loop: {err}")
 
     value = create_data_point(
         age=max_age, measurement=round(measurement, 3), label_value=label_value
@@ -297,7 +319,7 @@ def create_data_point(age: float, measurement: float, label_value: str):
         try:
             rounded = round(measurement, 4)
         except Exception as e:
-            print(f"{e} age:{age} measurement: {measurement}")
+            print(f"create datapoint error: {e} for {measurement}")
             return
     else:
         rounded = None
@@ -421,7 +443,7 @@ def measurement_for_z(z: float, l: float, m: float, s: float) -> float:
         try:
             measurement_value = (first_step**exponent) * m
         except Exception as e:
-            print(e)
+            print("measurement_for_z error: {e}")
             return
     else:
         measurement_value = math.exp(s * z) * m
@@ -622,14 +644,14 @@ def lms_value_array_for_measurement_for_reference(
                 default_youngest_reference=default_youngest_reference,
             )
         except LookupError as error:
-            raise LookupError(error)
+            raise LookupError(f"UK WHO lms array lookup error: {error}")
     elif reference == TURNERS:
         try:
             lms_value_array_for_measurement = turner_lms_array_for_measurement_and_sex(
                 measurement_method=measurement_method, sex=sex, age=age
             )
         except LookupError as error:
-            raise LookupError(error)
+            raise LookupError(f"Turner lms array lookup error: {error}")
     elif reference == TRISOMY_21:
         try:
             lms_value_array_for_measurement = (
@@ -638,7 +660,7 @@ def lms_value_array_for_measurement_for_reference(
                 )
             )
         except LookupError as error:
-            raise LookupError(error)
+            raise LookupError(f"Trisomy21 (UK) lms array lookup error: {error}")
     elif reference == CDC:
         try:
             lms_value_array_for_measurement = cdc_lms_array_for_measurement_and_sex(
@@ -648,13 +670,13 @@ def lms_value_array_for_measurement_for_reference(
                 default_youngest_reference=default_youngest_reference
             )
         except LookupError as error:
-            raise LookupError(error)
+            raise LookupError(f"CDC lms array lookup error: {error}")
     elif reference == TRISOMY_21_AAP:
         try:
             lms_value_array_for_measurement = trisomy_21_aap_lms_array_for_measurement_and_sex(
-                age=age, measurement_method=measurement_method, sex=sex)
+                age=age, measurement_method=measurement_method, sex=sex, default_youngest_reference=default_youngest_reference)
         except LookupError as error:
-            raise LookupError(error)
+            raise LookupError(f"Trisomy 21 (AAP) lms array lookup error: {error}")
     else:
-        raise ValueError("Incorrect reference supplied")
+        raise ValueError("No or incorrect reference supplied")
     return lms_value_array_for_measurement
