@@ -8,7 +8,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="rcpchgrowth",
-    version="4.1.1",
+    version="4.1.2",
     description="SDS and Centile calculations for UK Growth Data",
     long_description=long_description,
     url="https://github.com/rcpch/digital-growth-charts/blob/master/README.md",
@@ -21,7 +21,7 @@ setup(
         "Programming Language :: Python :: 3 :: Only",
         "Topic :: Scientific/Engineering :: Medical Science Apps.",
     ],
-    keywords="growth charts, anthropometry, SDS, centile, UK-WHO, UK90, Trisomy 21, Turner, CDC",
+    keywords="growth charts, anthropometry, SDS, centile, UK-WHO, UK90, Trisomy 21 (UK), Trisomy 21 (AAP), Turner, CDC",
     packages=find_packages(),
     python_requires=">3.8",
     install_requires=["python-dateutil", "scipy"],

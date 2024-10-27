@@ -9,6 +9,7 @@ from .dynamic_growth import create_thrive_line, return_correlation, create_thriv
 from .uk_who import select_reference_data_for_uk_who_chart
 from .turner import select_reference_data_for_turner
 from .trisomy_21 import select_reference_data_for_trisomy_21
+from .trisomy_21_aap import select_reference_data_for_trisomy_21_aap
 from .measurement import Measurement
 from .chart_functions import create_chart, generate_custom_sds_line
 from .constants import *
