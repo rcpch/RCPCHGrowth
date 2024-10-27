@@ -94,12 +94,12 @@ def select_reference_data_for_trisomy_21_aap(trisomy_21_aap_reference_name, meas
 
     if trisomy_21_aap_reference_name == TRISOMY_21_AAP_INFANT:
         try:
-            return_value = trisomy_21_aap_lms_array_for_measurement_and_sex(measurement_method=measurement_method, sex=sex, age=1.0) # select arbitrary age of 1 y for infant data
+            return_value = trisomy_21_aap_lms_array_for_measurement_and_sex(measurement_method=measurement_method, sex=sex, age=1.0, default_youngest_reference=default_youngest_reference) # select arbitrary age of 1 y for infant data
         except:
             raise LookupError(f"No data for {measurement_method} in the {sex} Trisomy 21 (AAP) dataset (<36mths).")
     elif trisomy_21_aap_reference_name == TRISOMY_21_AAP_CHILD:
         try:
-            return_value = trisomy_21_aap_lms_array_for_measurement_and_sex(measurement_method=measurement_method, sex=sex, age=4.0) # select arbitrary age of 4 y for child data
+            return_value = trisomy_21_aap_lms_array_for_measurement_and_sex(measurement_method=measurement_method, sex=sex, age=4.0, default_youngest_reference=default_youngest_reference) # select arbitrary age of 4 y for child data
         except:
             raise LookupError(f"No data for {measurement_method} in the {sex} Trisomy 21 (US) dataset (>3y).")
     return return_value

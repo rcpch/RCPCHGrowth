@@ -12,7 +12,8 @@ from .constants.reference_constants import (
     COLE_TWO_THIRDS_SDS_NINE_CENTILE_COLLECTION,
     EIGHTY_FIVE_PERCENT_CENTILES,
     EIGHTY_FIVE_PERCENT_CENTILE_COLLECTION,
-    FEMALE, 
+    FEMALE,
+    FENTON,
     FIVE_PERCENT_CENTILES,
     FIVE_PERCENT_CENTILE_COLLECTION,
     HEIGHT, 
@@ -403,6 +404,8 @@ def create_turner_chart(centile_format: Union[str, list], is_sds=False):
     # is different as SDS is rounded to the nearest 2/3
     # Cole method selection is stored in the cole_method flag.
     # If no parameter is passed, default is the Cole method
+    # NOTE: Turner's syndrome only affects girls and reference data only exists for height. This function will only return height data and
+    # relies on error handling elsewhere to catch any other requests for data.
 
     centile_sds_collection = []
     cole_method = False
@@ -499,7 +502,6 @@ def create_turner_chart(centile_format: Union[str, list], is_sds=False):
         female {...}
     }]
     """
-
 
 def create_trisomy_21_chart(measurement_method: str, sex: str, centile_format: Union[str, list], is_sds=False):
    # user selects which centile collection they want
@@ -627,14 +629,14 @@ def create_cdc_chart(
         is_sds=False
 
     ##
-    # iterate through the 4 references that make up UK-WHO
+    # iterate through the 3 references that make up CDC (Fenton, WHO, CDC  itself)
     # There will be a list for each one
     ##
 
     # all data for a given reference are stored here: this is returned to the user
     reference_data = []
 
-    for reference_index, reference in enumerate(CDC_REFERENCES):
+    for reference_index, reference_name in enumerate(CDC_REFERENCES):
         sex_list: dict = {}  # all the data for a given sex are stored here
         # For each reference we have 2 sexes
         # for sex_index, sex in enumerate(SEXES):
@@ -648,12 +650,17 @@ def create_cdc_chart(
 
         centiles = []  # all generated centiles for a selected centile collection are stored here
 
+        default_youngest_reference = False
+        if reference_index == 1: # WHO
+            default_youngest_reference = True
+
         # the centile reference data
         try:
             lms_array_for_measurement=select_reference_data_for_cdc_chart(
-                cdc_reference_name=reference, 
+                cdc_reference_name=reference_name, 
                 measurement_method=measurement_method, 
-                sex=sex)
+                 sex=sex, 
+                 default_youngest_reference=default_youngest_reference)
         except:
             lms_array_for_measurement = []
 
@@ -689,7 +696,8 @@ def create_cdc_chart(
                     sex=sex,
                     lms_array_for_measurement=lms_array_for_measurement,
                     reference=CDC,
-                    is_sds=is_sds
+                    is_sds=is_sds,
+                    default_youngest_reference=default_youngest_reference
                 )
             except LookupError as e:
                 print(f"Not possible to generate centile data for CDC {measurement_method} in {sex}s. {e}")
@@ -709,7 +717,7 @@ def create_cdc_chart(
         sex_list.update({sex: measurements})
 
         # all data can now be tagged by reference_name and added to reference_data
-        reference_data.append({reference: sex_list})
+        reference_data.append({reference_name: sex_list})
 
     # returns a list of 4 references, each containing 2 lists for each sex,
     # each sex in turn containing 4 datasets for each measurement_method
@@ -792,11 +800,15 @@ def create_trisomy_21_aap_chart(measurement_method: str, sex: str, centile_forma
         centiles = []  # all generated centiles for a selected centile collection are stored here
 
         # the centile reference data
+        default_youngest_reference = False
+        if reference_index == 0:
+            default_youngest_reference = True
         try:
             lms_array_for_measurement=select_reference_data_for_trisomy_21_aap(
                 trisomy_21_aap_reference_name=reference,
                 measurement_method=measurement_method, 
-                sex=sex
+                sex=sex,
+                default_youngest_reference=default_youngest_reference
             )
         except:
             lms_array_for_measurement = []
@@ -833,7 +845,8 @@ def create_trisomy_21_aap_chart(measurement_method: str, sex: str, centile_forma
                     sex=sex,
                     lms_array_for_measurement=lms_array_for_measurement,
                     reference=TRISOMY_21_AAP,
-                    is_sds=is_sds
+                    is_sds=is_sds,
+                    default_youngest_reference=default_youngest_reference
                 )
             except Exception as e:
                 print(f"Not possible to generate centile data for Trisomy 21 (AAP) for {measurement_method} in {sex}s. {e}")
