@@ -185,32 +185,28 @@ def generate_centile(
 
     for item in lms_array_for_measurement:
 
-        if item["decimal_age"] >= 3 and item['decimal_age']%1 != 0:
-            # skip non-integer ages above 3 years
-            continue
-        else:
-            try:
-                measurement = measurement_from_sds(
-                    reference=reference,
-                    measurement_method=measurement_method,
-                    requested_sds=round(z, 4),
-                    sex=sex,
-                    age=round(item['decimal_age'], 4),
-                    default_youngest_reference=default_youngest_reference,
-                )
-            except Exception as err:
-                print(err)
-                measurement = None  #
-                continue
-
-            if measurement is not None:
-                measurement = round(measurement, 4)
-
-            value = create_data_point(
-                age=round(item['decimal_age'], 4), measurement=measurement, label_value=label_value
+        try:
+            measurement = measurement_from_sds(
+                reference=reference,
+                measurement_method=measurement_method,
+                requested_sds=round(z, 4),
+                sex=sex,
+                age=round(item['decimal_age'], 4),
+                default_youngest_reference=default_youngest_reference,
             )
+        except Exception as err:
+            print(err)
+            measurement = None  #
+            continue
 
-            centile_measurements.append(value)
+        if measurement is not None:
+            measurement = round(measurement, 4)
+
+        value = create_data_point(
+            age=round(item['decimal_age'], 4), measurement=measurement, label_value=label_value
+        )
+
+        centile_measurements.append(value)
 
     return centile_measurements
 
