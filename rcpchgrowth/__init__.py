@@ -9,7 +9,7 @@ from .dynamic_growth import create_thrive_line, return_correlation, create_thriv
 from .global_functions import centile, sds_for_measurement, measurement_from_sds, percentage_median_bmi, mid_parental_height, measurement_for_z, cubic_interpolation, linear_interpolation
 from .fictional_child import generate_fictional_child_data
 from .measurement import Measurement
-from .miparental_height import *
+from .mid_parental_height import *
 from .trisomy_21 import select_reference_data_for_trisomy_21
 from .trisomy_21_aap import select_reference_data_for_trisomy_21_aap
 from .turner import select_reference_data_for_turner
