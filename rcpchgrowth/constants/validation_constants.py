@@ -51,3 +51,14 @@ MINIMUM_PARENTAL_HEIGHT_CM = 50
 # the shortest woman in the world is Jyoti Kishanji Amge at 62.8 cm
 # lower limit to paternal and maternal height here therefore set arbitrarily at 50 cm
 # (this constant was added from the API server `schemas/request_validation_classes.py`)
+
+# These constants are used to determine the range of SDS values that are considered - see discussion in issue #32 in the rcpchgrowth-python repository
+# All previous hard-coded values have been replaced with these constants
+MINIMUM_HEIGHT_WEIGHT_OFC_ADVISORY_SDS = -4
+MAXIMUM_HEIGHT_WEIGHT_OFC_ADVISORY_SDS = 4
+MINIMUM_BMI_ADVISORY_SDS = -4
+MAXIMUM_BMI_ADVISORY_SDS = 4
+MINIMUM_HEIGHT_WEIGHT_OFC_ERROR_SDS = -8
+MAXIMUM_HEIGHT_WEIGHT_OFC_ERROR_SDS = 8
+MINIMUM_BMI_ERROR_SDS = -15
+MAXIMUM_BMI_ERROR_SDS = 15
