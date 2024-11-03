@@ -374,3 +374,11 @@ def test_centile_band_for_centile_eighty_five_percent():
     for centile in on_eighty_five_percent_centiles_bmi:
         sds = sds_for_centile(centile['centile'])
         assert centile_band_for_centile(sds=sds, measurement_method="bmi", centile_format=EIGHTY_FIVE_PERCENT_CENTILES) == f"This body mass index measurement is on or near the {centile['text']} centile."
+
+def test_advisory_thresholds():
+    for measurement in measurements:
+        for centile in beyond_eighty_five_percent_thresholds:
+            sds = 5 # above 4 and less than 8
+            if measurement == BMI:
+                sds = 10
+            assert centile_band_for_centile(sds=sds, measurement_method=measurement, centile_format=COLE_TWO_THIRDS_SDS_NINE_CENTILES) == f"This {measurement_texts[measurements.index(measurement)]} measurement is well outside the normal range. Please check its accuracy."

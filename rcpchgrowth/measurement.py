@@ -84,7 +84,7 @@ class Measurement:
         # validate the measurement method to ensure that the observation value is within the expected range - changed to SDS-based cutoffs - issue #32
         try:
             self.__validate_measurement_method(
-                measurement_method=measurement_method, observation_value=observation_value, corrected_decimal_age=self.ages_object['measurement_dates']['corrected_decimal_age'], reference=reference)
+                measurement_method=measurement_method, observation_value=observation_value, corrected_decimal_age=self.ages_object['measurement_dates']['corrected_decimal_age'], reference=reference, sex=sex)
             observation_value_error = None
         except Exception as err:
             observation_value_error = f"{err}"
@@ -601,6 +601,7 @@ class Measurement:
             measurement_method: str,
             observation_value: float,
             corrected_decimal_age: float,
+            sex: Literal["male", "female"],
             reference: Literal['uk-who', 'turners-syndrome', 'trisomy-21', 'trisomy-21-aap', 'cdc'] = 'uk-who'):
 
         # Private method which accepts a measurement_method (height, weight, bmi or ofc), reference and age as well as observation value
@@ -611,7 +612,7 @@ class Measurement:
         observation_value_z_score = None
         if observation_value is not None:
             observation_value_z_score = sds_for_measurement(
-                reference=reference, age=corrected_decimal_age, measurement_method=measurement_method, observation_value=observation_value)
+                reference=reference, age=corrected_decimal_age, measurement_method=measurement_method, observation_value=observation_value, sex=sex)
 
         if measurement_method == 'bmi':
             if observation_value is None:

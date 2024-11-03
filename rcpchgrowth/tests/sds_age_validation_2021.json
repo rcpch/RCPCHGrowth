@@ -51998,5 +51998,19 @@
     "observation_value": 53.9,
     "corrected_sds": -0.577332795,
     "chronological_sds": -0.628501058
+  },
+  {
+    "birth_date": "26/10/2015",
+    "observation_date": "01/09/2018",
+    "gestation_weeks": 40,
+    "gestation_days": 0,
+    "sex": "male",
+    "measurement_method": "height",
+    "observation_value": 180.0,
+    "chronological_age": 2.8501026694045173,
+    "corrected_sds": 23.499259393398773,
+    "corrected_age": 2.8501026694045173,
+    "chronological_sds": 23.499259393398773
   }
+
 ]
