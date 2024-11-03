@@ -1,6 +1,6 @@
 # imports from rcpchgrowth
 from rcpchgrowth.constants.reference_constants import COLE_TWO_THIRDS_SDS_NINE_CENTILES, THREE_PERCENT_CENTILES, UK_WHO, CDC
-from .constants import BMI, HEAD_CIRCUMFERENCE,THREE_PERCENT_CENTILE_COLLECTION,COLE_TWO_THIRDS_SDS_NINE_CENTILE_COLLECTION ,FIVE_PERCENT_CENTILES, FIVE_PERCENT_CENTILE_COLLECTION, EIGHTY_FIVE_PERCENT_CENTILES, EIGHTY_FIVE_PERCENT_CENTILE_COLLECTION
+from .constants import BMI, HEAD_CIRCUMFERENCE,THREE_PERCENT_CENTILE_COLLECTION,COLE_TWO_THIRDS_SDS_NINE_CENTILE_COLLECTION ,FIVE_PERCENT_CENTILES, FIVE_PERCENT_CENTILE_COLLECTION, EIGHTY_FIVE_PERCENT_CENTILES, EIGHTY_FIVE_PERCENT_CENTILE_COLLECTION, MAXIMUM_HEIGHT_WEIGHT_OFC_ADVISORY_SDS, MINIMUM_HEIGHT_WEIGHT_OFC_ADVISORY_SDS, MAXIMUM_BMI_ADVISORY_SDS, MINIMUM_BMI_ADVISORY_SDS, HEIGHT, WEIGHT, HEAD_CIRCUMFERENCE, BMI
 from .global_functions import rounded_sds_for_centile, sds_for_centile
 
 # Recommendations from Project board for reporting Centiles
@@ -107,6 +107,8 @@ def centile_band_for_centile(sds: float, measurement_method: str, centile_format
         params: accepts a sds: float
         params: accepts a measurement_method as string
         params: accepts array of centiles representing the centile lines
+
+        These advice messages appear in the tooltips of the growth charts in the RCPCH Growth Chart and are advisory only. They do not reject data entry.
     """
     
     centile_collection = []
@@ -121,15 +123,19 @@ def centile_band_for_centile(sds: float, measurement_method: str, centile_format
 
     centile_band_ranges = generate_centile_band_ranges(centile_collection)
 
+    upper_threshold = MAXIMUM_HEIGHT_WEIGHT_OFC_ADVISORY_SDS
+    lower_threshold = MINIMUM_HEIGHT_WEIGHT_OFC_ADVISORY_SDS
     if measurement_method == BMI:
         measurement_method = "body mass index"
+        upper_threshold = MAXIMUM_BMI_ADVISORY_SDS
+        lower_threshold = MINIMUM_BMI_ADVISORY_SDS
     elif measurement_method == HEAD_CIRCUMFERENCE:
         measurement_method = "head circumference"
 
-    if sds <= -6:
-        return f"This {measurement_method} measurement is well below the normal range. Please review its accuracy."
-    elif sds > 6:
-        return f"This {measurement_method} measurement is well above the normal range. Please review its accuracy."
+    if sds < lower_threshold:
+        return f"This {measurement_method} measurement is well outside the normal range. Please check its accuracy."
+    elif sds > upper_threshold:
+        return f"This {measurement_method} measurement is well outside the normal range. Please check its accuracy."
     elif sds <= centile_band_ranges[0][0]:
         return f"This {measurement_method} measurement is below the normal range."
     elif sds > centile_band_ranges[-1][1]:
