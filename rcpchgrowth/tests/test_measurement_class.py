@@ -63,7 +63,7 @@ def test_measurement_class_ukwho_data(line):
             line["corrected_sds"], abs=ACCURACY)
         if line["corrected_sds"] > 4 and line["corrected_sds"] < 8 and line["measurement_method"] != BMI:
             assert measurement_object.measurement[
-                "measurement_calculated_values"]['corrected_centile_band'] == f"This {line["measurement_method"]} measurement is well outside the normal range. Please check its accuracy."
+                "measurement_calculated_values"]['corrected_centile_band'] == f"This {line['measurement_method']} measurement is well outside the normal range. Please check its accuracy."
         elif line["corrected_sds"] > 8 and line["measurement_method"] != BMI:
             units="cm"
             measurement_method = line["measurement_method"]
@@ -77,8 +77,11 @@ def test_measurement_class_ukwho_data(line):
             assert measurement_object.measurement["child_observation_value"]["observation_value_error"] == f'The {measurement_method} of {observation_value} {units} is above +8 SD and considered to be an error.'
         elif line["corrected_sds"] > 4 and line["corrected_sds"] <= 15 and line["measurement_method"] == BMI:
             assert measurement_object.measurement[
-                "measurement_calculated_values"]['corrected_centile_band'] == f"This {line["measurement_method"]} measurement is well outside the normal range. Please check its accuracy."
-
+                "measurement_calculated_values"]['corrected_centile_band'] == f"This {line['measurement_method']} measurement is well outside the normal range. Please check its accuracy."
+        elif line["corrected_sds"] < -15 and line["measurement_method"] == BMI:
+            observation_value = line["observation_value"]
+            assert measurement_object.measurement[
+                "child_observation_value"]['observation_value_error'] == f"The Body Mass Index measurement of {observation_value} kg/m² is below -15 SD and considered to be an error."
     # this conditional guards against failure of pytest.approx with NoneTypes
     if line["chronological_sds"] is None:
         assert measurement_object.measurement[

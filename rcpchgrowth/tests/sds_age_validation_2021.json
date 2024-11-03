@@ -52011,6 +52011,18 @@
     "corrected_sds": 23.499259393398773,
     "corrected_age": 2.8501026694045173,
     "chronological_sds": 23.499259393398773
+  },
+  {
+    "birth_date": "26/10/2015",
+    "observation_date": "01/09/2030",
+    "gestation_weeks": 40,
+    "gestation_days": 0,
+    "sex": "male",
+    "measurement_method": "bmi",
+    "observation_value": 7.0,
+    "chronological_age": 14.850102669404517,
+    "corrected_sds": -22.21786749424378,
+    "corrected_age": 14.850102669404517,
+    "chronological_sds": -22.21786749424378
   }
-
 ]
