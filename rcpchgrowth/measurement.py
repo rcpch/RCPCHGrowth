@@ -1,5 +1,6 @@
 # standard imports
 from datetime import date
+from typing import Literal
 
 # rcpch imports
 from .centile_bands import centile_band_for_centile
@@ -71,13 +72,6 @@ class Measurement:
         # self.height_prediction_reference = height_prediction_reference
         self.events_text = events_text
 
-        # validate the measurement method to ensure that the observation value is within the expected range - TODO this will be changed to SDS-based cutoffs
-        try:
-            self.__validate_measurement_method(
-                measurement_method=measurement_method, observation_value=observation_value)
-            observation_value_error = None
-        except Exception as err:
-            observation_value_error = f"{err}"
 
         # the ages_object receives birth_data and measurement_dates objects
         self.ages_object = self.__calculate_ages(
@@ -87,6 +81,13 @@ class Measurement:
             gestation_weeks=self.gestation_weeks,
             gestation_days=self.gestation_days)
         
+        # validate the measurement method to ensure that the observation value is within the expected range - changed to SDS-based cutoffs - issue #32
+        try:
+            self.__validate_measurement_method(
+                measurement_method=measurement_method, observation_value=observation_value, corrected_decimal_age=self.ages_object['measurement_dates']['corrected_decimal_age'], reference=reference, sex=sex)
+            observation_value_error = None
+        except Exception as err:
+            observation_value_error = f"{err}"
         
         # the calculate_measurements_object receives the child_observation_value and measurement_calculated_values objects
         self.calculated_measurements_object = self.sds_and_centile_for_measurement_method(
@@ -598,17 +599,31 @@ class Measurement:
     def __validate_measurement_method(
             self,
             measurement_method: str,
-            observation_value: float):
+            observation_value: float,
+            corrected_decimal_age: float,
+            sex: Literal["male", "female"],
+            reference: Literal['uk-who', 'turners-syndrome', 'trisomy-21', 'trisomy-21-aap', 'cdc'] = 'uk-who'):
 
-        # Private method which accepts a measurement_method (height, weight, bmi or ofc) and
+        # Private method which accepts a measurement_method (height, weight, bmi or ofc), reference and age as well as observation value
         # and returns True if valid
 
         is_valid = False
 
+        observation_value_z_score = None
+        if observation_value is not None:
+            observation_value_z_score = sds_for_measurement(
+                reference=reference, age=corrected_decimal_age, measurement_method=measurement_method, observation_value=observation_value, sex=sex)
+
         if measurement_method == 'bmi':
             if observation_value is None:
                 raise ValueError(
-                    'Missing observation_value for Body Mass Index. Please pass a Body Mass Index in kilograms per metre squared (kg/m2)')
+                    'Missing observation_value for Body Mass Index. Please pass a Body Mass Index in kilograms per metre squared (kg/m²)')
+            elif observation_value_z_score < MINIMUM_BMI_ERROR_SDS:
+                raise ValueError(
+                    f'The Body Mass Index measurement of {observation_value} kg/m² is below -15 SD and considered to be an error.')
+            elif observation_value_z_score > MAXIMUM_BMI_KGM2:
+                raise ValueError(
+                    f'The Body Mass Index measurement of {observation_value} kg/m² is above +15 SD and considered to be an error.')
             else:
                 is_valid = True
 
@@ -620,13 +635,12 @@ class Measurement:
                 # most likely metres passed instead of cm.
                 raise ValueError(
                     'Height/length must be passed in cm, not metres')
-            elif observation_value < MINIMUM_LENGTH_CM:
-                # a baby is unlikely to be < 30 cm long - probably a data entry error
+            elif observation_value_z_score < MINIMUM_HEIGHT_WEIGHT_OFC_ERROR_SDS:
                 raise ValueError(
-                    f'The height/length you have entered is very low and likely to be an error. Are you sure you meant a height of {observation_value} centimetres?')
-            elif observation_value > MAXIMUM_HEIGHT_CM:
+                    f'The height/length of {observation_value} cm is below -8 SD and considered to be an error.')
+            elif observation_value_z_score > MAXIMUM_HEIGHT_WEIGHT_OFC_ERROR_SDS:
                 raise ValueError(
-                    f'The height/length you have entered is very high and likely to be an error. Are you sure you meant a height of {observation_value} centimetres?')
+                    f'The height/length of {observation_value} cm is above +8 SD and considered to be an error.')
             else:
                 is_valid = True
 
@@ -634,13 +648,13 @@ class Measurement:
             if observation_value is None:
                 raise ValueError(
                     'Missing observation_value for weight. Please pass a weight in kilograms.')
-            elif observation_value < MINIMUM_WEIGHT_KG:
+            elif observation_value_z_score < MINIMUM_HEIGHT_WEIGHT_OFC_ERROR_SDS:
                 raise ValueError(
-                    f'Error. {observation_value} kilograms is very low. Please pass an accurate weight in kilograms')
-            elif observation_value > MAXIMUM_WEIGHT_KG:
+                    f'The weight of {observation_value} kg is below -8 SD and considered to be an error.')
+            elif observation_value_z_score > MAXIMUM_HEIGHT_WEIGHT_OFC_ERROR_SDS:
                 # it is likely the weight is passed in grams, not kg.
                 raise ValueError(
-                    f'{observation_value} kilograms is very high. Weight must be passed in kilograms.')
+                    f'The weight of {observation_value} kg is above +8 SD and considered to be an error. Note that the weight should be supplied in kilograms.')
             else:
                 is_valid = True
 
@@ -648,12 +662,12 @@ class Measurement:
             if observation_value is None:
                 raise ValueError(
                     'Missing observation_value for head circumference. Please pass a head circumference in centimetres.')
-            elif observation_value < MINIMUM_OFC_CM:
+            elif observation_value_z_score < MINIMUM_HEIGHT_WEIGHT_OFC_ERROR_SDS:
                 raise ValueError(
-                    f'Please check this value: {observation_value}. A head circumference less than 5 centimetres is likely an error. Please pass an accurate head circumference in centimetres.')
-            elif observation_value > MAXIMUM_OFC_CM:
+                    f'The head circumference of {observation_value} cm is below -8 SD and considered to be an error.')
+            elif observation_value_z_score > MAXIMUM_HEIGHT_WEIGHT_OFC_ERROR_SDS:
                 raise ValueError(
-                    f'Please check this value: {observation_value}. A head circumference > 150 centimetres is likely an error. Please pass an accurate head circumference in cm.')
+                    f'The head circumference of {observation_value} cm is above +8 SD and considered to be an error.')
             else:
                 is_valid = True
 

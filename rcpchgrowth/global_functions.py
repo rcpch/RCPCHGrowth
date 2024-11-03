@@ -210,20 +210,6 @@ def generate_centile(
 
     return centile_measurements
 
-
-def mid_parental_height(
-    height_paternal: float, height_maternal: float, sex: str
-) -> float:
-    """
-    Calculates mid-parental height for the child.
-    All units are in cm
-    """
-    if sex == MALE:
-        return (height_paternal + height_maternal + 13) / 2
-    else:
-        return (height_paternal + height_maternal - 13) / 2
-
-
 """
 *** PUBLIC FUNCTIONS THAT CONVERT BETWEEN CENTILE AND SDS
 """
