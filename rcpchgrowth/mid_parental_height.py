@@ -26,7 +26,7 @@ def mid_parental_height_z(maternal_height, paternal_height, reference=UK_WHO):
     maternal_height_z = sds_for_measurement(reference=reference, age=20.0, measurement_method=HEIGHT, observation_value=maternal_height, sex=FEMALE)
     paternal_height_z = sds_for_measurement(reference=reference, age=20.0, measurement_method=HEIGHT, observation_value=paternal_height, sex=MALE)
 
-    # take the measn of the z-scores and apply the regression coefficient of 0.5 - simplifed: (MatHtz +PatHtz)/4
+    # take the means of the z-scores and apply the regression coefficient of 0.5 - simplifed: (MatHtz +PatHtz)/4
     mid_parental_height_z_score = (maternal_height_z + paternal_height_z) / 4.0
 
     return mid_parental_height_z_score
