@@ -621,7 +621,7 @@ class Measurement:
             elif observation_value_z_score < MINIMUM_BMI_ERROR_SDS:
                 raise ValueError(
                     f'The Body Mass Index measurement of {observation_value} kg/m² is below -15 SD and considered to be an error.')
-            elif observation_value_z_score > MAXIMUM_BMI_KGM2:
+            elif observation_value_z_score > MAXIMUM_BMI_ERROR_SDS:
                 raise ValueError(
                     f'The Body Mass Index measurement of {observation_value} kg/m² is above +15 SD and considered to be an error.')
             else:
