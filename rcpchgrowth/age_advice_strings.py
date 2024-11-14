@@ -22,9 +22,9 @@ def comment_prematurity_correction(
                     clinician_corrected_decimal_age_comment = f"Born preterm at {gestation_weeks}+{gestation_days} weeks gestation. No correction is made for this beyond 2 years of age."
                 else:
                     lay_chronological_decimal_age_comment = f"Your child was born at {gestation_weeks}+{gestation_days} weeks gestation. This is considered term and no correction for gestation has been made."
-                    clinician_chronological_decimal_age_comment = f"Born at term at {gestation_weeks}+{gestation_days} weeks gestation. This is considered term and no correction for gestation has been made."
+                    clinician_chronological_decimal_age_comment = f"Born at term at {gestation_weeks}+{gestation_days} weeks gestation. No correction for gestation has been made."
                     lay_corrected_decimal_age_comment = f"Your child was born at {gestation_weeks}+{gestation_days} weeks gestation. This is considered term and no correction for gestation has been made."
-                    clinician_corrected_decimal_age_comment = f"Born at term at {gestation_weeks}+{gestation_days} weeks gestation. This is considered term and no correction for gestation has been made."
+                    clinician_corrected_decimal_age_comment = f"Born at term at {gestation_weeks}+{gestation_days} weeks gestation. No correction for gestation has been made."
     elif chronological_decimal_age > corrected_decimal_age or chronological_decimal_age < corrected_decimal_age:
         ## adjustment for gestational age has been made - even if >=37 weeks
         lay_corrected_decimal_age_comment = f"Because your child was born at {gestation_weeks}+{gestation_days} weeks gestation an adjustment has been made to take this into account."
