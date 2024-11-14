@@ -395,6 +395,11 @@ class Measurement:
             gestation_weeks = 40
         # calculate ages from dates and gestational ages at birth
 
+        # if reference is CDC, we must treat >37 week infants as term.
+        if self.reference == CDC and gestation_weeks >= 37:
+            gestation_weeks = 40
+            gestation_days = 0
+
         try:
             self.corrected_decimal_age = corrected_decimal_age(
                 birth_date=birth_date,
@@ -412,6 +417,10 @@ class Measurement:
         except Exception as err:
             self.chronological_decimal_age = None
             chronological_decimal_age_error = f"{err}"
+        
+        # if the reference is CDC, we also stop correcting for prematurity at 2 years of age
+        if self.reference == CDC and self.corrected_decimal_age >= 2:
+            self.corrected_decimal_age = self.chronological_decimal_age
 
         if self.corrected_decimal_age is None:
             self._age_comments = None
