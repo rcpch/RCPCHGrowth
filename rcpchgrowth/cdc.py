@@ -56,8 +56,8 @@ def reference_data_absent(age: float, measurement_method: str, sex: str):
     - CDC data is used from 2-20 years
     """
 
-    # if age < 0:
-    #     return True, "CDC data does not exist below 40 weeks."
+    if age < 0:
+        return True, "CDC data does not exist below 40 weeks."
     if age > TWENTY_YEARS:  # upper threshold of UK90 data
         return True, "CDC data does not exist above 20 years."
     if measurement_method == HEAD_CIRCUMFERENCE and age > THREE_YEARS:
@@ -109,6 +109,12 @@ def cdc_lms_array_for_measurement_and_sex(
 
     # selects the correct lms data array from the patchwork of references that make up UK-WHO
 
+    # Check that the measurement requested has reference data at that age
+
+    invalid_data, data_error = reference_data_absent(
+     
+        age=age, measurement_method=measurement_method, sex=sex
+    )
     try:
         selected_reference = cdc_reference(
             age=age, measurement_method=measurement_method, default_youngest_reference=default_youngest_reference
@@ -116,11 +122,6 @@ def cdc_lms_array_for_measurement_and_sex(
     except:  #  there is no reference for the age supplied
         return LookupError("There is no CDC reference for the age supplied.")
 
-    # Check that the measurement requested has reference data at that age
-
-    invalid_data, data_error = reference_data_absent(
-        age=age, measurement_method=measurement_method, sex=sex
-    )
 
     if invalid_data:
         raise LookupError(data_error)
