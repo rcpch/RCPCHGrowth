@@ -1,8 +1,11 @@
+from rcpchgrowth.constants import CDC
+
 def comment_prematurity_correction(
     chronological_decimal_age: float,
     corrected_decimal_age: float,
     gestation_weeks: int,
-    gestation_days: int):
+    gestation_days: int,
+    reference: str):
     """
     Returns interpretations on age correction as a string
     """
@@ -14,7 +17,7 @@ def comment_prematurity_correction(
             lay_chronological_decimal_age_comment = "Your child was born on their due date."
             clinician_chronological_decimal_age_comment = "Born Term. No correction has been made for gestation."
             # These fields should only apply to CDC reference, since UK-WHO corrects for all gestations (and therefore corrected_decimal_age will never be equal to chronological_decimal_age if gestation_weeks is not 40)
-            if gestation_weeks < 42:
+            if gestation_weeks < 42 and reference == CDC:
                 if gestation_weeks < 37:
                     lay_chronological_decimal_age_comment = f"Your child was born at {gestation_weeks}+{gestation_days} weeks gestation. No correction is made for this beyond 2 years of age."
                     clinician_chronological_decimal_age_comment =f"Born preterm at {gestation_weeks}+{gestation_days} weeks gestation. No correction is made for this beyond 2 years of age."
@@ -25,6 +28,11 @@ def comment_prematurity_correction(
                     clinician_chronological_decimal_age_comment = f"Born at term at {gestation_weeks}+{gestation_days} weeks gestation. No correction for gestation has been made."
                     lay_corrected_decimal_age_comment = f"Your child was born at {gestation_weeks}+{gestation_days} weeks gestation. This is considered term and no correction for gestation has been made."
                     clinician_corrected_decimal_age_comment = f"Born at term at {gestation_weeks}+{gestation_days} weeks gestation. No correction for gestation has been made."
+                    if gestation_weeks == 40 and gestation_days == 0:
+                        lay_chronological_decimal_age_comment = "Your child was born at term. No correction for gestation has been made."
+                        clinician_chronological_decimal_age_comment = "Born at term. No correction for gestation has been made."
+                        lay_corrected_decimal_age_comment = "Your child was born at term. No correction for gestation has been made."
+                        clinician_corrected_decimal_age_comment = "Born at term. No correction for gestation has been made."
     elif chronological_decimal_age > corrected_decimal_age or chronological_decimal_age < corrected_decimal_age:
         ## adjustment for gestational age has been made - even if >=37 weeks
         lay_corrected_decimal_age_comment = f"Because your child was born at {gestation_weeks}+{gestation_days} weeks gestation an adjustment has been made to take this into account."

@@ -433,7 +433,8 @@ class Measurement:
                     chronological_decimal_age=self.chronological_decimal_age,
                     corrected_decimal_age=self.corrected_decimal_age,
                     gestation_weeks=gestation_weeks,
-                    gestation_days=gestation_days)
+                    gestation_days=gestation_days,
+                    reference=self.reference)
             except:
                 self.age_comments = None
                 corrected_decimal_age_error = "Error in comment on prematurity."
