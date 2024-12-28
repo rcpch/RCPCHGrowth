@@ -73,6 +73,9 @@ def reference_data_absent(
 
     if measurement_method == WEIGHT and age > TEN_YEARS:
         return True, "WHO weight data does not exist in children over 10 y of age."
+    
+    if measurement_method == HEAD_CIRCUMFERENCE and age > FIVE_YEARS:
+        return True, "WHO head circumference data does not exist in children over 5 y of age."
 
     else:
         return False, ""
@@ -94,7 +97,7 @@ def who_reference(
     # These conditionals are to select the correct reference
     if age < WHO_2006_REFERENCE_LOWER_THRESHOLD:
         # Below the range for which we have reference data, we can't provide a calculation.
-        return ValueError("There is no WHO reference data below 42 weeks gestation")
+        raise LookupError("There is no WHO reference data below 42 weeks gestation")
 
 
     elif age <= WHO_2006_REFERENCE_UPPER_THRESHOLD:
@@ -103,7 +106,7 @@ def who_reference(
             # If default_youngest_reference is True, the younger reference is used to calculate values
             # This is specifically for the overlap between WHO 2006 lying and standing in centile curve generation
             # WHO 2006 reference is used for children below 2 years or those who are 2 years old and default_youngest_reference is True
-            return WHO_INFANTS_DATA     
+            return WHO_INFANTS_DATA
         return WHO_CHILD_DATA
         
     elif age <= WHO_2007_REFERENCE_UPPER_THRESHOLD:
@@ -111,7 +114,7 @@ def who_reference(
         return WHO_2007_DATA
 
     else:
-        return ValueError("There are no WHO reference data above the age of 19 years.")
+        raise LookupError("There are no WHO reference data above the age of 19 years.")
 
 
 def who_lms_array_for_measurement_and_sex(
@@ -129,7 +132,7 @@ def who_lms_array_for_measurement_and_sex(
             default_youngest_reference=default_youngest_reference
         )
     except:  #  there is no reference for the age supplied
-        return LookupError("There is no WHO reference for the age supplied.")
+        raise LookupError("There is no WHO reference for the age supplied.")
 
     # Check that the measurement requested has reference data at that age
 

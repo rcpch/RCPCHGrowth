@@ -243,8 +243,8 @@ def centile(z_score: float):
     try:
         centile = stats.norm.cdf(z_score) * 100
         return centile
-    except TypeError as err:
-        raise TypeError(err)
+    except Exception as err:
+        raise Exception(err)
 
 
 """

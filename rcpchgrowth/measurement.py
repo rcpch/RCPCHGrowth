@@ -285,7 +285,7 @@ class Measurement:
             try:
                 chronological_measurement_centile = centile(
                     z_score=chronological_measurement_sds)
-            except TypeError as err:
+            except Exception as err:
                 chronological_measurement_error = "Not possible to calculate centile"
                 chronological_measurement_centile = None
             try:
@@ -301,7 +301,7 @@ class Measurement:
                     measurement_method=measurement_method,
                     centile_format=centile_format
                     )
-            except TypeError as err:
+            except Exception as err:
                 chronological_measurement_error = "Not possible to calculate centile"
                 chronological_centile_band = None
 
@@ -313,7 +313,7 @@ class Measurement:
             try:
                 corrected_measurement_centile = centile(
                     z_score=corrected_measurement_sds)
-            except TypeError as err:
+            except Exception as err:
                 corrected_measurement_error = "Not possible to calculate centile"
                 corrected_measurement_centile = None
 
@@ -330,7 +330,7 @@ class Measurement:
                     measurement_method=measurement_method,
                     centile_format=centile_format
                 )
-            except TypeError as err:
+            except Exception as err:
                 corrected_measurement_error = "Not possible to calculate centile"
                 corrected_centile_band = None
 
@@ -609,7 +609,7 @@ class Measurement:
             observation_value: float,
             corrected_decimal_age: float,
             sex: Literal["male", "female"],
-            reference: Literal['uk-who', 'turners-syndrome', 'trisomy-21', 'trisomy-21-aap', 'cdc'] = 'uk-who'):
+            reference: Literal['uk-who', 'turners-syndrome', 'trisomy-21', 'trisomy-21-aap', 'cdc', 'who'] = 'uk-who'):
 
         # Private method which accepts a measurement_method (height, weight, bmi or ofc), reference and age as well as observation value
         # and returns True if valid
