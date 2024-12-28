@@ -41,7 +41,7 @@ class Measurement:
         Additionally there are the following optional parameters:
         `gestation_weeks`: (integer) gestation at birth in weeks.
         `gestation_days`: (integer) supplemental days in addition to gestation_weeks at birth.
-        `reference`: ENUM refering to which reference dataset to use: ['uk-who', 'turners-syndrome', 'trisomy-21'].
+        `reference`: ENUM refering to which reference dataset to use: ['uk-who', 'turners-syndrome', 'trisomy-21', 'trisomy-21-aap', 'cdc', 'who'].
         `height_prediction`: decimal years
         `height_prediction_sds`: SDS for height prediction against reference
         `height_prediction_centile`: centile for height prediction against reference

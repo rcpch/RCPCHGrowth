@@ -144,47 +144,47 @@ def who_lms_array_for_measurement_and_sex(
         return selected_reference["measurement"][measurement_method][sex]
 
 
-# def select_reference_data_for_who_chart(
-#     who_reference_name: str, 
-#     measurement_method: str, 
-#     sex: str):
+def select_reference_data_for_who_chart(
+    who_reference_name: str, 
+    measurement_method: str, 
+    sex: str):
 
-#     # takes a who_reference name (see parameter constants), measurement_method and sex to return
-#     # reference data
+    # takes a who_reference name (see parameter constants), measurement_method and sex to return
+    # reference data
 
-#     if who_reference_name == WHO_2006_INFANT:
-#         try:
-#             who_infants_reference = who_lms_array_for_measurement_and_sex(
-#                 age=0.04,
-#                 measurement_method=measurement_method,
-#                 sex=sex,
-#                 default_youngest_reference=False # should never need younger reference in this calculation
-#             )
-#         except:
-#             who_infants_reference = []
-#         return who_infants_reference
-#     elif who_reference_name == WHO_CHILD:
-#         try:
-#             who_children_reference = who_lms_array_for_measurement_and_sex(
-#                 age=2.0,
-#                 measurement_method=measurement_method,
-#                 sex=sex,
-#                 default_youngest_reference=False # should never need younger reference in this calculation
-#             )
-#         except:
-#             who_children_reference = []
-#         return who_children_reference
-#     elif who_reference_name == UK90_CHILD:
-#         try:
-#             children_reference = who_lms_array_for_measurement_and_sex(
-#                 age=4.0,
-#                 measurement_method=measurement_method,
-#                 sex=sex,
-#                 default_youngest_reference=False # should never need younger reference in this calculation
-#             )
-#         except:
-#             who_2007_children_reference = []
-#         return uk90_children_reference
-#     else:
-#         raise LookupError(
-#             f"No data found for {measurement_method} in {sex}s in {who_reference_name}")
+    if who_reference_name == WHO_2006_INFANT:
+        try:
+            who_infants_reference = who_lms_array_for_measurement_and_sex(
+                age=0.04,
+                measurement_method=measurement_method,
+                sex=sex,
+                default_youngest_reference=False # should never need younger reference in this calculation
+            )
+        except:
+            who_infants_reference = []
+        return who_infants_reference
+    elif who_reference_name == WHO_2006_CHILD:
+        try:
+            who_2006_children_reference = who_lms_array_for_measurement_and_sex(
+                age=1.0,
+                measurement_method=measurement_method,
+                sex=sex,
+                default_youngest_reference=False # should never need younger reference in this calculation
+            )
+        except:
+            who_2006_children_reference = []
+        return who_2006_children_reference
+    elif who_reference_name == WHO_2007_CHILD:
+        try:
+            who_2007_children_reference = who_lms_array_for_measurement_and_sex(
+                age=4.0,
+                measurement_method=measurement_method,
+                sex=sex,
+                default_youngest_reference=False # should never need younger reference in this calculation
+            )
+        except:
+            who_2007_children_reference = []
+        return who_2007_children_reference
+    else:
+        raise LookupError(
+            f"No data found for {measurement_method} in {sex}s in {who_reference_name}")

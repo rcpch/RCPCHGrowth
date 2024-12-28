@@ -1,5 +1,5 @@
 # NOTE The below is the Docker Compose specification version NOT the Python version:
-version: "3.8"
+version: "3.12"
 
 services:
   rcpchgrowth-python:
