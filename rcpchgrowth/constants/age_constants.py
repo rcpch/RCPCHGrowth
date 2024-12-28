@@ -7,6 +7,7 @@ THIRTY_SEVEN_WEEKS_GESTATION = ((37 * 7) - (40 * 7)) / 365.25  # 37 weeks as dec
 FORTY_TWO_WEEKS_GESTATION = ((42 * 7) - (40 * 7)) / 365.25  # 42 weeks as decimal age
 TWENTY_THREE_WEEKS_GESTATION = ((23 * 7) - (40 * 7)) / 365.25  # 23 weeks as decimal age
 FIFTY_WEEKS_GESTATION = ((50 * 7) - (40 * 7)) / 365.25  # 50 weeks as decimal age
+ZERO_YEARS = 0.0
 TWO_YEARS = 2.0
 THREE_YEARS = 3.0
 FIVE_YEARS = 5.0

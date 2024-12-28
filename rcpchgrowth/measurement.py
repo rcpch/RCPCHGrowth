@@ -414,8 +414,8 @@ class Measurement:
             self.chronological_decimal_age = None
             chronological_decimal_age_error = f"{err}"
         
-        # if reference is CDC, we must treat >37 week infants as term and we also stop correcting for prematurity at 2 years of age
-        if self.reference == CDC:
+        # if reference is CDC or WHO, we must treat >37 week infants as term and we also stop correcting for prematurity at 2 years of age
+        if self.reference == CDC or self.reference == WHO:
             if (self.corrected_decimal_age >= 2 and gestation_weeks < 37) or (gestation_weeks >= 37 and gestation_weeks <= 42):
                 self.corrected_decimal_age = self.chronological_decimal_age
 

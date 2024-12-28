@@ -65,8 +65,8 @@ def reference_data_absent(
      - lowest threshold is 23 weeks, upper threshold is 20y
     """
 
-    if age < FORTY_TWO_WEEKS_GESTATION:  # lower threshold of WHO data
-        return True, "WHO data does not exist below 40 weeks gestation."
+    if age < ZERO_YEARS:  # lower threshold of WHO data
+        return True, "WHO data does not exist below term."
 
     if age > NINETEEN_YEARS:  # upper threshold of UK90 data
         return True, "WHO data does not exist above 19 years."
@@ -94,13 +94,13 @@ def who_reference(
     The function return the appropriate reference file as json
     """
 
-    # These conditionals are to select the correct reference
-    if age < WHO_2006_REFERENCE_LOWER_THRESHOLD:
-        # Below the range for which we have reference data, we can't provide a calculation.
-        raise LookupError("There is no WHO reference data below 42 weeks gestation")
+    # # These conditionals are to select the correct reference
+    # if age < WHO_2006_REFERENCE_LOWER_THRESHOLD:
+    #     # Below the range for which we have reference data, we can't provide a calculation.
+    #     raise LookupError("There is no WHO reference data below 42 weeks gestation")
 
 
-    elif age <= WHO_2006_REFERENCE_UPPER_THRESHOLD:
+    if age <= WHO_2006_REFERENCE_UPPER_THRESHOLD:
         # Children up to and including 5 years are measured using WHO 2006 data
         if (age == 2.0 and default_youngest_reference) or age < WHO_CHILD_LOWER_THRESHOLD:
             # If default_youngest_reference is True, the younger reference is used to calculate values
