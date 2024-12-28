@@ -41,7 +41,7 @@ class Measurement:
         Additionally there are the following optional parameters:
         `gestation_weeks`: (integer) gestation at birth in weeks.
         `gestation_days`: (integer) supplemental days in addition to gestation_weeks at birth.
-        `reference`: ENUM refering to which reference dataset to use: ['uk-who', 'turners-syndrome', 'trisomy-21'].
+        `reference`: ENUM refering to which reference dataset to use: ['uk-who', 'turners-syndrome', 'trisomy-21', 'trisomy-21-aap', 'cdc', 'who'].
         `height_prediction`: decimal years
         `height_prediction_sds`: SDS for height prediction against reference
         `height_prediction_centile`: centile for height prediction against reference
@@ -285,7 +285,7 @@ class Measurement:
             try:
                 chronological_measurement_centile = centile(
                     z_score=chronological_measurement_sds)
-            except TypeError as err:
+            except Exception as err:
                 chronological_measurement_error = "Not possible to calculate centile"
                 chronological_measurement_centile = None
             try:
@@ -301,7 +301,7 @@ class Measurement:
                     measurement_method=measurement_method,
                     centile_format=centile_format
                     )
-            except TypeError as err:
+            except Exception as err:
                 chronological_measurement_error = "Not possible to calculate centile"
                 chronological_centile_band = None
 
@@ -313,7 +313,7 @@ class Measurement:
             try:
                 corrected_measurement_centile = centile(
                     z_score=corrected_measurement_sds)
-            except TypeError as err:
+            except Exception as err:
                 corrected_measurement_error = "Not possible to calculate centile"
                 corrected_measurement_centile = None
 
@@ -330,7 +330,7 @@ class Measurement:
                     measurement_method=measurement_method,
                     centile_format=centile_format
                 )
-            except TypeError as err:
+            except Exception as err:
                 corrected_measurement_error = "Not possible to calculate centile"
                 corrected_centile_band = None
 
@@ -414,8 +414,8 @@ class Measurement:
             self.chronological_decimal_age = None
             chronological_decimal_age_error = f"{err}"
         
-        # if reference is CDC, we must treat >37 week infants as term and we also stop correcting for prematurity at 2 years of age
-        if self.reference == CDC:
+        # if reference is CDC or WHO, we must treat >37 week infants as term and we also stop correcting for prematurity at 2 years of age
+        if self.reference == CDC or self.reference == WHO:
             if (self.corrected_decimal_age >= 2 and gestation_weeks < 37) or (gestation_weeks >= 37 and gestation_weeks <= 42):
                 self.corrected_decimal_age = self.chronological_decimal_age
 
@@ -609,7 +609,7 @@ class Measurement:
             observation_value: float,
             corrected_decimal_age: float,
             sex: Literal["male", "female"],
-            reference: Literal['uk-who', 'turners-syndrome', 'trisomy-21', 'trisomy-21-aap', 'cdc'] = 'uk-who'):
+            reference: Literal['uk-who', 'turners-syndrome', 'trisomy-21', 'trisomy-21-aap', 'cdc', 'who'] = 'uk-who'):
 
         # Private method which accepts a measurement_method (height, weight, bmi or ofc), reference and age as well as observation value
         # and returns True if valid

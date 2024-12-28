@@ -27,6 +27,18 @@ CDC_CHILD = "cdc_child" # CDC child is the reference name for children 2-20 year
 FENTON = "fenton" # Fenton is the reference name for preterm infants
 CDC_REFERENCES = [FENTON, CDC_INFANT, CDC_CHILD] # CDC references
 
+# WHO constants
+WHO = "who" # WHO is the overarching reference
+WHO_2006_INFANT = "who_2006_infant" # WHO 2006 infant is the reference name for children 0-2 years
+WHO_2006_CHILD = "who_2006_child" # WHO 2006 child is the reference name for children 2-5 years
+WHO_2007_CHILD = "who_2007_child" # WHO 2007 child is the reference name for children 5-19 years
+WHO_REFERENCES = [WHO_2006_INFANT, WHO_2006_CHILD, WHO_2007_CHILD] # WHO references
+
+WHO_2006_REFERENCE_LOWER_THRESHOLD = ((42 * 7) - (40 * 7)) / 365.25  # 42 weeks as decimal age  # 2 weeks as decimal age
+WHO_2006_REFERENCE_UPPER_THRESHOLD = 5.0  # 5 years as decimal age
+WHO_2007_REFERENCE_LOWER_THRESHOLD = 5.0  # 5 years as decimal age
+WHO_2007_REFERENCE_UPPER_THRESHOLD = 19.0  # 19 years as decimal age
+
 # 23 weeks is the lowest decimal age available on the UK90 charts
 UK90_REFERENCE_LOWER_THRESHOLD = (
     (23 * 7) - (40 * 7)
@@ -64,7 +76,7 @@ HEIGHT = "height"
 WEIGHT = "weight"
 HEAD_CIRCUMFERENCE = "ofc"
 BMI = "bmi"
-REFERENCES = [UK_WHO, TRISOMY_21, TURNERS]
+REFERENCES = [UK_WHO, TRISOMY_21, TRISOMY_21_AAP, TURNERS, CDC, WHO]
 SEXES = [MALE, FEMALE]
 MEASUREMENT_METHODS = [HEIGHT, WEIGHT, HEAD_CIRCUMFERENCE, BMI]
 

@@ -1,4 +1,4 @@
-from rcpchgrowth.constants import CDC
+from rcpchgrowth.constants import CDC, WHO
 
 def comment_prematurity_correction(
     chronological_decimal_age: float,
@@ -17,7 +17,7 @@ def comment_prematurity_correction(
             lay_chronological_decimal_age_comment = "Your child was born on their due date."
             clinician_chronological_decimal_age_comment = "Born Term. No correction has been made for gestation."
             # These fields should only apply to CDC reference, since UK-WHO corrects for all gestations (and therefore corrected_decimal_age will never be equal to chronological_decimal_age if gestation_weeks is not 40)
-            if gestation_weeks < 42 and reference == CDC:
+            if gestation_weeks < 42 and (reference == CDC or reference == WHO):
                 if gestation_weeks < 37:
                     lay_chronological_decimal_age_comment = f"Your child was born at {gestation_weeks}+{gestation_days} weeks gestation. No correction is made for this beyond 2 years of age."
                     clinician_chronological_decimal_age_comment =f"Born preterm at {gestation_weeks}+{gestation_days} weeks gestation. No correction is made for this beyond 2 years of age."
