@@ -6,10 +6,11 @@ from .turner import turner_lms_array_for_measurement_and_sex
 from .trisomy_21 import trisomy_21_lms_array_for_measurement_and_sex
 from .cdc import cdc_lms_array_for_measurement_and_sex
 from .trisomy_21_aap import trisomy_21_aap_lms_array_for_measurement_and_sex
+from .who import who_lms_array_for_measurement_and_sex
 
 # from scipy import interpolate  #see below, comment back in if swapping interpolation method
 # from scipy.interpolate import CubicSpline #see below, comment back in if swapping interpolation method
-from .constants.reference_constants import MALE, UK_WHO, TURNERS, TRISOMY_21, BMI, CDC, TRISOMY_21_AAP, HEAD_CIRCUMFERENCE
+from .constants.reference_constants import UK_WHO, TURNERS, TRISOMY_21, BMI, CDC, TRISOMY_21_AAP, WHO
 
 
 """Public functions"""
@@ -578,6 +579,16 @@ def lms_value_array_for_measurement_for_reference(
     if reference == UK_WHO:
         try:
             lms_value_array_for_measurement = uk_who_lms_array_for_measurement_and_sex(
+                age=age,
+                measurement_method=measurement_method,
+                sex=sex,
+                default_youngest_reference=default_youngest_reference,
+            )
+        except LookupError as error:
+            raise LookupError(error)
+    elif reference == WHO:
+        try:
+            lms_value_array_for_measurement = who_lms_array_for_measurement_and_sex(
                 age=age,
                 measurement_method=measurement_method,
                 sex=sex,

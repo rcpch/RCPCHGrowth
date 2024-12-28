@@ -1,4 +1,3 @@
-# NOTE The below is the Docker Compose specification version NOT the Python version:
 version: "3.12"
 
 services:
@@ -9,5 +8,4 @@ services:
     working_dir: /app
     tty: true # Allocate a pseudo-TTY
     stdin_open: true # Keep stdin open
-    command: |
-      pytest
+    container_name: rcpchgrowth-python
