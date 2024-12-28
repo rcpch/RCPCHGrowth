@@ -1,4 +1,4 @@
-from .constants import HEIGHT, MALE, FEMALE, UK_WHO
+from .constants import HEIGHT, MALE, FEMALE, UK_WHO, WHO
 from .global_functions import sds_for_measurement
 """
 Functions to calculate mid-parental height
@@ -23,8 +23,12 @@ def mid_parental_height_z(maternal_height, paternal_height, reference=UK_WHO):
     """
     
     # convert parental heights to z-scores
-    maternal_height_z = sds_for_measurement(reference=reference, age=20.0, measurement_method=HEIGHT, observation_value=maternal_height, sex=FEMALE)
-    paternal_height_z = sds_for_measurement(reference=reference, age=20.0, measurement_method=HEIGHT, observation_value=paternal_height, sex=MALE)
+    adult_age = 20.0
+    if reference == WHO:
+        adult_age = 19.0
+    
+    maternal_height_z = sds_for_measurement(reference=reference, age=adult_age, measurement_method=HEIGHT, observation_value=maternal_height, sex=FEMALE)
+    paternal_height_z = sds_for_measurement(reference=reference, age=adult_age, measurement_method=HEIGHT, observation_value=paternal_height, sex=MALE)
 
     # take the means of the z-scores and apply the regression coefficient of 0.5 - simplifed: (MatHtz +PatHtz)/4
     mid_parental_height_z_score = (maternal_height_z + paternal_height_z) / 4.0
