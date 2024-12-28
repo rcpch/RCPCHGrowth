@@ -150,7 +150,8 @@ def who_lms_array_for_measurement_and_sex(
 def select_reference_data_for_who_chart(
     who_reference_name: str, 
     measurement_method: str, 
-    sex: str):
+    sex: str,
+    default_youngest_reference: bool = False):
 
     # takes a who_reference name (see parameter constants), measurement_method and sex to return
     # reference data
@@ -161,7 +162,7 @@ def select_reference_data_for_who_chart(
                 age=0.04,
                 measurement_method=measurement_method,
                 sex=sex,
-                default_youngest_reference=False # should never need younger reference in this calculation
+                default_youngest_reference=default_youngest_reference 
             )
         except:
             who_infants_reference = []
@@ -172,7 +173,7 @@ def select_reference_data_for_who_chart(
                 age=1.0,
                 measurement_method=measurement_method,
                 sex=sex,
-                default_youngest_reference=False # should never need younger reference in this calculation
+                default_youngest_reference=default_youngest_reference # should never need younger reference in this calculation
             )
         except:
             who_2006_children_reference = []
@@ -180,10 +181,10 @@ def select_reference_data_for_who_chart(
     elif who_reference_name == WHO_2007_CHILD:
         try:
             who_2007_children_reference = who_lms_array_for_measurement_and_sex(
-                age=4.0,
+                age=6.0,
                 measurement_method=measurement_method,
                 sex=sex,
-                default_youngest_reference=False # should never need younger reference in this calculation
+                default_youngest_reference=default_youngest_reference
             )
         except:
             who_2007_children_reference = []
