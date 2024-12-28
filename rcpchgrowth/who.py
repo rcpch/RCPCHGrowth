@@ -170,7 +170,7 @@ def select_reference_data_for_who_chart(
     elif who_reference_name == WHO_2006_CHILD:
         try:
             who_2006_children_reference = who_lms_array_for_measurement_and_sex(
-                age=1.0,
+                age=3.0,
                 measurement_method=measurement_method,
                 sex=sex,
                 default_youngest_reference=default_youngest_reference # should never need younger reference in this calculation

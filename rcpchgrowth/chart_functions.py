@@ -351,6 +351,10 @@ def create_uk_who_chart(
                 sex=sex)
         except:
             lms_array_for_measurement = []
+        
+        # truncate the who_child data to stop at 4y
+        if len(lms_array_for_measurement) > 0:
+            lms_array_for_measurement = [obj for obj in lms_array_for_measurement if obj["decimal_age"] <= 4.0]
 
         for centile_index, centile_sds in enumerate(centile_sds_collection):
             # we must create a z for each requested centile
