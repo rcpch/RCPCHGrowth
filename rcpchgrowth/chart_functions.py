@@ -330,7 +330,7 @@ def create_uk_who_chart(
     # all data for a given reference are stored here: this is returned to the user
     reference_data = []
 
-    for reference_index, reference in enumerate(UK_WHO_REFERENCES):
+    for reference_index, reference_name in enumerate(UK_WHO_REFERENCES):
         sex_list: dict = {}  # all the data for a given sex are stored here
         # For each reference we have 2 sexes
         # for sex_index, sex in enumerate(SEXES):
@@ -343,19 +343,6 @@ def create_uk_who_chart(
         # as have been requested
 
         centiles = []  # all generated centiles for a selected centile collection are stored here
-
-        # the centile reference data
-        try:
-            lms_array_for_measurement=select_reference_data_for_uk_who_chart(
-                uk_who_reference_name=reference, 
-                measurement_method=measurement_method, 
-                sex=sex)
-        except:
-            lms_array_for_measurement = []
-        
-        # truncate the who_child data to stop at 4y in the WHO child reference. Must not do this for the UK90 reference
-        if len(lms_array_for_measurement) > 0 and reference == UK_WHO_CHILD:
-            lms_array_for_measurement = [obj for obj in lms_array_for_measurement if obj["decimal_age"] <= 4.0]
 
         for centile_index, centile_sds in enumerate(centile_sds_collection):
             # we must create a z for each requested centile
@@ -387,7 +374,7 @@ def create_uk_who_chart(
                     centile=centile_value,
                     measurement_method=measurement_method,
                     sex=sex,
-                    lms_array_for_measurement=lms_array_for_measurement,
+                    reference_name=reference_name,
                     reference=UK_WHO,
                     is_sds=is_sds
                 )
@@ -409,7 +396,7 @@ def create_uk_who_chart(
         sex_list.update({sex: measurements})
 
         # all data can now be tagged by reference_name and added to reference_data
-        reference_data.append({reference: sex_list})
+        reference_data.append({reference_name: sex_list})
 
     # returns a list of 4 references, each containing 2 lists for each sex,
     # each sex in turn containing 4 datasets for each measurement_method
@@ -492,8 +479,8 @@ def create_turner_chart(centile_format: Union[str, list], is_sds=False):
                 z = sds_for_centile(centile_sds)
                 centile_value=centile_sds
         # Collect the LMS values from the correct reference
-        lms_array_for_measurement = select_reference_data_for_turner(
-            measurement_method=HEIGHT, sex=sex)
+        # lms_array_for_measurement = select_reference_data_for_turner(
+        #     measurement_method=HEIGHT, sex=sex)
         # Generate a centile. there will be nine of these if Cole method selected.
         # Some data does not exist at all ages, so any error reflects missing data.
         # If this happens, an empty list is returned.
@@ -503,7 +490,7 @@ def create_turner_chart(centile_format: Union[str, list], is_sds=False):
                 centile=centile_value, 
                 measurement_method=HEIGHT,
                 sex=sex, 
-                lms_array_for_measurement=lms_array_for_measurement, reference=TURNERS,
+                reference_name=TURNERS, reference=TURNERS,
                 is_sds=is_sds)
 
             # Store this centile for a given measurement
@@ -564,14 +551,7 @@ def create_trisomy_21_chart(measurement_method: str, sex: str, centile_format: U
     reference_data = {}
     sex_list: dict = {}
 
-    # for sex_index, sex in enumerate(SEXES):
-    # For each sex we have 4 measurement_methods
-
     measurements: dict = {}  # all the data for a given measurement_method are stored here
-
-    # for measurement_index, measurement_method in enumerate(MEASUREMENT_METHODS):
-    # for every measurement method we have as many centiles
-    # as have been requested
 
     centiles = []  # all generated centiles for a selected centile collection are stored here
 
@@ -590,9 +570,7 @@ def create_trisomy_21_chart(measurement_method: str, sex: str, centile_format: U
             else:
                 z = sds_for_centile(centile_sds)
                 centile_value=centile_sds
-        # Collect the LMS values from the correct reference
-        lms_array_for_measurement = select_reference_data_for_trisomy_21(
-            measurement_method=measurement_method, sex=sex)
+
         # Generate a centile. there will be nine of these if Cole method selected.
         # Some data does not exist at all ages, so any error reflects missing data.
         # If this happens, an empty list is returned.
@@ -602,8 +580,8 @@ def create_trisomy_21_chart(measurement_method: str, sex: str, centile_format: U
                 centile=centile_value, 
                 measurement_method=measurement_method,
                 sex=sex, 
-                lms_array_for_measurement=lms_array_for_measurement, 
                 reference=TRISOMY_21,
+                reference_name=TRISOMY_21,
                 is_sds=is_sds)
 
             # Store this centile for a given measurement
@@ -678,30 +656,10 @@ def create_cdc_chart(
     for reference_index, reference_name in enumerate(CDC_REFERENCES):
         sex_list: dict = {}  # all the data for a given sex are stored here
         # For each reference we have 2 sexes
-        # for sex_index, sex in enumerate(SEXES):
-        # For each sex we have 4 measurement_methods
-
+        
         measurements: dict = {}  # all the data for a given measurement_method are stored here
 
-        # for measurement_index, measurement_method in enumerate(MEASUREMENT_METHODS):
-        # for every measurement method we have as many centiles
-        # as have been requested
-
         centiles = []  # all generated centiles for a selected centile collection are stored here
-
-        default_youngest_reference = False
-        if reference_index == 1: # WHO
-            default_youngest_reference = True
-
-        # the centile reference data
-        try:
-            lms_array_for_measurement=select_reference_data_for_cdc_chart(
-                cdc_reference_name=reference_name, 
-                measurement_method=measurement_method, 
-                 sex=sex, 
-                 default_youngest_reference=default_youngest_reference)
-        except:
-            lms_array_for_measurement = []
 
         for centile_index, centile_sds in enumerate(centile_sds_collection):
             # we must create a z for each requested centile
@@ -733,10 +691,9 @@ def create_cdc_chart(
                     centile=centile_value,
                     measurement_method=measurement_method,
                     sex=sex,
-                    lms_array_for_measurement=lms_array_for_measurement,
                     reference=CDC,
-                    is_sds=is_sds,
-                    default_youngest_reference=default_youngest_reference
+                    reference_name=reference_name,
+                    is_sds=is_sds
                 )
             except LookupError as e:
                 print(f"Not possible to generate centile data for CDC {measurement_method} in {sex}s. {e}")
@@ -824,33 +781,14 @@ def create_trisomy_21_aap_chart(measurement_method: str, sex: str, centile_forma
     # all data for a given reference are stored here: this is returned to the user
     reference_data = []
 
-    for reference_index, reference in enumerate(TRISOMY_21_AAP_REFERENCES):
+    for reference_index, reference_name in enumerate(TRISOMY_21_AAP_REFERENCES):
         sex_list: dict = {}  # all the data for a given sex are stored here
         # For each reference we have 2 sexes
-        # for sex_index, sex in enumerate(SEXES):
         # For each sex we have 4 measurement_methods
 
         measurements: dict = {}  # all the data for a given measurement_method are stored here
 
-        # for measurement_index, measurement_method in enumerate(MEASUREMENT_METHODS):
-        # for every measurement method we have as many centiles
-        # as have been requested
-
         centiles = []  # all generated centiles for a selected centile collection are stored here
-
-        # the centile reference data
-        default_youngest_reference = False
-        if reference_index == 0:
-            default_youngest_reference = True
-        try:
-            lms_array_for_measurement=select_reference_data_for_trisomy_21_aap(
-                trisomy_21_aap_reference_name=reference,
-                measurement_method=measurement_method, 
-                sex=sex,
-                default_youngest_reference=default_youngest_reference
-            )
-        except:
-            lms_array_for_measurement = []
 
         for centile_index, centile_sds in enumerate(centile_sds_collection):
             # we must create a z for each requested centile
@@ -882,10 +820,10 @@ def create_trisomy_21_aap_chart(measurement_method: str, sex: str, centile_forma
                     centile=centile_value,
                     measurement_method=measurement_method,
                     sex=sex,
-                    lms_array_for_measurement=lms_array_for_measurement,
                     reference=TRISOMY_21_AAP,
+                    reference_name=reference_name,
                     is_sds=is_sds,
-                    default_youngest_reference=default_youngest_reference
+
                 )
             except Exception as e:
                 print(f"Not possible to generate centile data for Trisomy 21 (AAP) for {measurement_method} in {sex}s. {e}")
@@ -905,7 +843,7 @@ def create_trisomy_21_aap_chart(measurement_method: str, sex: str, centile_forma
         sex_list.update({sex: measurements})
 
         # all data can now be tagged by reference_name and added to reference_data
-        reference_data.append({reference: sex_list})
+        reference_data.append({reference_name: sex_list})
 
     # returns a list of 2 references, each containing 2 lists for each sex,
     # each sex in turn containing 4 datasets for each measurement_method
@@ -982,30 +920,14 @@ def create_who_chart(
     for reference_index, reference_name in enumerate(WHO_REFERENCES):
         sex_list: dict = {}  # all the data for a given sex are stored here
         # For each reference we have 2 sexes
-        # for sex_index, sex in enumerate(SEXES):
         # For each sex we have 4 measurement_methods
 
         measurements: dict = {}  # all the data for a given measurement_method are stored here
 
-        # for measurement_index, measurement_method in enumerate(MEASUREMENT_METHODS):
         # for every measurement method we have as many centiles
         # as have been requested
 
         centiles = []  # all generated centiles for a selected centile collection are stored here
-
-        default_youngest_reference = False
-        if reference_index == 1: # WHO children
-            default_youngest_reference = True
-
-        # the centile reference data
-        try:
-            lms_array_for_measurement=select_reference_data_for_who_chart(
-                who_reference_name=reference_name, 
-                measurement_method=measurement_method, 
-                 sex=sex, 
-                 default_youngest_reference=default_youngest_reference)
-        except:
-            lms_array_for_measurement = []
 
         for centile_index, centile_sds in enumerate(centile_sds_collection):
             # we must create a z for each requested centile
@@ -1037,10 +959,9 @@ def create_who_chart(
                     centile=centile_value,
                     measurement_method=measurement_method,
                     sex=sex,
-                    lms_array_for_measurement=lms_array_for_measurement,
                     reference=WHO,
                     is_sds=is_sds,
-                    default_youngest_reference=default_youngest_reference
+                    reference_name=reference_name
                 )
             except LookupError as e:
                 print(f"Not possible to generate centile data for WHO {measurement_method} in {sex}s. {e}")
