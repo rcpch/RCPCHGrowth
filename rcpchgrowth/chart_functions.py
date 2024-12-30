@@ -13,6 +13,8 @@ from .constants.reference_constants import (
     COLE_TWO_THIRDS_SDS_NINE_CENTILE_COLLECTION,
     EIGHTY_FIVE_PERCENT_CENTILES,
     EIGHTY_FIVE_PERCENT_CENTILE_COLLECTION,
+    EXTENDED_WHO_CENTILES,
+    EXTENDED_WHO_CENTILES_COLLECTION,
     FEMALE,
     FENTON,
     FIVE_PERCENT_CENTILES,
@@ -353,16 +355,17 @@ def create_uk_who_chart(
             z=0.0 #initialise
             centile_value=0.0 #initialise
 
-            if cole_method:
-                z = rounded_sds_for_centile(centile_sds) # a centile was provided, so convert to z
-                centile_value=centile_sds # store the original centile value 
+            # if cole_method:
+            #     z = rounded_sds_for_centile(centile_sds) # a centile was provided, so convert to z
+            #     centile_value=centile_sds # store the original centile value 
+            # else:
+            if (is_sds):
+                z=centile_sds # an sds was supplied
+                centile_value=centile(centile_sds) # convert the z to a centile and store
             else:
-                if (is_sds):
-                    z=centile_sds # an sds was supplied
-                    centile_value=centile(centile_sds) # convert the z to a centile and store
-                else:
-                    z = sds_for_centile(centile_sds) # a centile was provided, so convert to z
-                    centile_value=centile_sds # store the original centile value 
+                z = sds_for_centile(centile_sds) # a centile was provided, so convert to z
+                print(f"z: {z}")
+                centile_value=centile_sds # store the original centile value 
             centile_data = []
 
             try:
@@ -1038,5 +1041,7 @@ def select_centile_format(centile_format: str):
         return FIVE_PERCENT_CENTILE_COLLECTION
     elif centile_format == EIGHTY_FIVE_PERCENT_CENTILES:
         return EIGHTY_FIVE_PERCENT_CENTILE_COLLECTION
+    elif centile_format == EXTENDED_WHO_CENTILES:
+        return EXTENDED_WHO_CENTILES_COLLECTION
     else:
         return COLE_TWO_THIRDS_SDS_NINE_CENTILE_COLLECTION
