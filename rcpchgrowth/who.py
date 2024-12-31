@@ -87,18 +87,12 @@ def who_reference(
 ) -> json:
     """
     The purpose of this function is to choose the correct reference for calculation.
-    The UK-WHO standard is an unusual case because it combines two different reference sources.
-    - UK90 reference runs from 23 weeks to 20 y
-    - WHO 2006 runs from 2 weeks to 4 years
-    - UK90 then resumes from 4 years to 20 years
+    The WHO standard.
+    - WHO_INFANTS reference runs from 0 weeks to 2 y
+    - WHO_CHILD_DATA runs from 2 years to 5 years (also stored as WHO_2006_CHILD)
+    - WHO_2007_CHILD then resumes from 5 years to 19 years
     The function return the appropriate reference file as json
     """
-
-    # # These conditionals are to select the correct reference
-    # if age < WHO_2006_REFERENCE_LOWER_THRESHOLD:
-    #     # Below the range for which we have reference data, we can't provide a calculation.
-    #     raise LookupError("There is no WHO reference data below 42 weeks gestation")
-
 
     if age <= WHO_2006_REFERENCE_UPPER_THRESHOLD:
         # Children up to and including 5 years are measured using WHO 2006 data

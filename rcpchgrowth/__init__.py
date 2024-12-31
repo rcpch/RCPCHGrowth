@@ -2,7 +2,7 @@ from .age_advice_strings import comment_prematurity_correction
 from .bmi_functions import bmi_from_height_weight, weight_for_bmi_height
 from .cdc import select_reference_data_for_cdc_chart
 from .centile_bands import centile_band_for_centile
-from .chart_functions import create_chart, generate_custom_sds_line
+from .chart_functions import create_chart
 from .constants import *
 from .date_calculations import chronological_decimal_age, corrected_decimal_age, chronological_calendar_age, estimated_date_delivery, corrected_gestational_age
 from .dynamic_growth import create_thrive_line, return_correlation, create_thrive_lines
