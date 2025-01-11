@@ -222,7 +222,6 @@ def create_uk_who_chart(
             else:
                 if cole_method:
                     z = rounded_sds_for_centile(centile_sds)
-                    print(f"z: {z}, {centile_sds}")
                 else:
                     z = sds_for_centile(centile_sds) # a centile was provided, so convert to z
                 centile_value=centile_sds # store the original centile value 
