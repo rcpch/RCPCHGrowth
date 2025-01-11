@@ -177,7 +177,7 @@ def create_uk_who_chart(
     # Alternatively it is possible to pass a custom list of values - if the is_sds flag is False (default) these are centiles
 
     centile_sds_collection = []
-    cole_method = False
+    cole_method = True if centile_format == COLE_TWO_THIRDS_SDS_NINE_CENTILES else False
 
     if (type(centile_format) is list):
         # a custom list of centiles was provided
@@ -220,8 +220,10 @@ def create_uk_who_chart(
                 z=centile_sds # an sds was supplied
                 centile_value=centile(centile_sds) # convert the z to a centile and store
             else:
-                z = sds_for_centile(centile_sds) # a centile was provided, so convert to z
-                print(f"z: {z}")
+                if cole_method:
+                    z = rounded_sds_for_centile(centile_sds)
+                else:
+                    z = sds_for_centile(centile_sds) # a centile was provided, so convert to z
                 centile_value=centile_sds # store the original centile value 
             centile_data = []
 
