@@ -97,7 +97,7 @@ def cdc_reference(age: float, measurement_method, default_youngest_reference: bo
         return CDC_CHILD_DATA 
 
     else:
-        return ValueError("There is no CDC reference data above the age of 20 years.")
+        raise ValueError("There is no CDC reference data above the age of 20 years.")
 
 
 def cdc_lms_array_for_measurement_and_sex(
