@@ -44,6 +44,12 @@ with open(data_path) as json_file:
     json_file.close()
 # public functions
 
+data_path = Path(
+    data_directory, "who_infants.json")  # 2 weeks to 2 years
+with open(data_path) as json_file:
+    WHO_INFANTS_DATA = json.load(json_file)
+    json_file.close()
+
 
 def reference_data_absent(age: float, measurement_method: str, sex: str):
     """
@@ -88,9 +94,13 @@ def cdc_reference(age: float, measurement_method, default_youngest_reference: bo
         # Below 40 weeks, Fenton data is always used
         return FENTON_DATA
     
-    elif age < 2 or (age == 2 and default_youngest_reference) or (measurement_method == HEAD_CIRCUMFERENCE and age <= 3):
-        # Below 2 years, CDC interpretation of WHO is used
+    if measurement_method == HEAD_CIRCUMFERENCE and age <= 3:
+        # CDC data is used for head circumference up to 3 years
         return CDC_INFANT_DATA
+
+    elif age < 2 or (age == 2 and default_youngest_reference):
+        # Below 2 years, CDC interpretation of WHO is used
+        return WHO_INFANTS_DATA
 
     elif age <= CDC_UPPER_THRESHOLD:
         # CDC data is used for all children 2-20 years
