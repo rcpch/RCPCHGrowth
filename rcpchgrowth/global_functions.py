@@ -13,7 +13,7 @@ from .who import who_lms_array_for_measurement_and_sex
 from .constants.reference_constants import (
     UK_WHO, TURNERS, 
     TRISOMY_21, 
-    BMI, CDC, 
+    BMI, CDC, WEIGHT, HEIGHT, HEAD_CIRCUMFERENCE,
     TRISOMY_21_AAP, 
     WHO, 
     UK90_PRETERM,
@@ -34,7 +34,8 @@ from .constants.reference_constants import (
     WHO_2006_OVER_TWOS_AGES,
     WHO_2007_AGES,
     UK90_AGES,
-    CDC_TO_TWO,
+    CDC_TO_TWO_AGE,
+    CDC_TO_THREE_AGE,
     CDC_TWO_TWENTY,
     TURNER_AGES,
     TRISOMY_21_AGES,
@@ -234,7 +235,12 @@ def generate_centile(
 
     elif reference == CDC:
         if reference_name == CDC_INFANT:
-            AGES = CDC_TO_TWO
+            if measurement_method == HEAD_CIRCUMFERENCE:
+                AGES = CDC_TO_THREE_AGE
+            elif measurement_method == HEIGHT or measurement_method == WEIGHT:
+                AGES = WHO_2006_UNDER_TWOS_AGES
+            else:
+                AGES = CDC_TO_TWO_AGE # should be redundant as no BMI data in CDC_INFANT
         elif reference_name == CDC_CHILD:
             AGES = CDC_TWO_TWENTY
         elif reference_name == FENTON:
@@ -258,6 +264,11 @@ def generate_centile(
                 return True
         if reference_name == UK_WHO_INFANT:
             if age == 2:
+                return True
+        elif reference_name == CDC_INFANT:
+            if age == 0.038329911:
+                return True
+            elif age == 2:
                 return True
         elif reference_name == UK_WHO_CHILD:
             if age == 4:
