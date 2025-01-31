@@ -101,6 +101,11 @@ def who_reference(
             # This is specifically for the overlap between WHO 2006 lying and standing in centile curve generation
             # WHO 2006 reference is used for children below 2 years or those who are 2 years old and default_youngest_reference is True
             return WHO_INFANTS_DATA
+        elif age == 5.0:
+            if default_youngest_reference:
+                return WHO_CHILD_DATA
+            else:
+                return WHO_2007_DATA
         return WHO_CHILD_DATA
         
     elif age <= WHO_2007_REFERENCE_UPPER_THRESHOLD:
